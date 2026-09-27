@@ -72,7 +72,7 @@ Los modelos Django crean las tablas `TBL_Usuario`, `TBL_Video` y `TBL_Usuario_Vi
 
 ## Prueba realizada
 
-Revisé la captura de datos, la confirmación, la subida de un MP4 de 1.09 MB, su registro en PostgreSQL, su aparición en la biblioteca, su reproducción y su descarga. También se ejecutaron las etapas de consola y se comprobó la generación de `salida.txt`.
+Revisé la captura de datos, la confirmación, la subida de un MP4 de 1.09 MB, su registro en PostgreSQL, su aparición en la biblioteca, su reproducción y su descarga. También ejecuté las etapas de consola y comprobé que se generara `salida.txt`.
 
 ## Autora
 
