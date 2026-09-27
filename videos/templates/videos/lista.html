@@ -1,0 +1,42 @@
+{% extends "videos/base.html" %}
+{% block title %}Biblioteca | Pro-Gol Watch{% endblock %}
+
+{% block content %}
+<section class="hero hero-compacto">
+    <span class="etiqueta">Biblioteca digital</span>
+    <h1>Videos registrados</h1>
+    <p>Consulta, reproduce y descarga los videos guardados en Pro-Gol Watch.</p>
+    <a class="boton" href="{% url 'inicio' %}">+ Subir más videos</a>
+</section>
+
+{% if relaciones %}
+    <div class="lista-videos">
+        {% for relacion in relaciones %}
+            <article class="tarjeta video-tarjeta">
+                <div>
+                    <span class="etiqueta">{{ relacion.video.extension|upper }}</span>
+                    <h2>{{ relacion.video.titulo }}</h2>
+                    <p>Archivo: {{ relacion.video.nombre }}</p>
+                    <p>Usuario: {{ relacion.usuario.nombre }}
+                       ({{ relacion.usuario.nomina }})</p>
+                    <p>{{ relacion.video.tamano_mb }} MB ·
+                       {{ relacion.video.fecha_subida|date:"d/m/Y H:i" }}</p>
+                </div>
+                <div class="acciones">
+                    <a class="boton" href="{% url 'reproducir_video' relacion.video.id %}"
+                       target="_blank" rel="noopener">Ver video</a>
+                    <a class="boton boton-secundario"
+                       href="{% url 'descargar_video' relacion.video.id %}">
+                        Descargar
+                    </a>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <section class="tarjeta vacio">
+        <h2>Todavía no hay videos</h2>
+        <p>Registra un usuario y carga el primer archivo para comenzar.</p>
+    </section>
+{% endif %}
+{% endblock %}

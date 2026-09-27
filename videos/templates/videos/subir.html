@@ -1,0 +1,95 @@
+{% extends "videos/base.html" %}
+{% block title %}Subir videos | Pro-Gol Watch{% endblock %}
+
+{% block content %}
+<section class="hero hero-compacto">
+    <span class="etiqueta">03 / 03 · Carga de archivos</span>
+    <h1>Sube tus videos</h1>
+    <p>{{ datos.nombre }} · {{ datos.nomina }} ·
+       {{ datos.cantidad }} video{{ datos.cantidad|pluralize }}</p>
+</section>
+
+<form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {{ conjunto.management_form }}
+
+    {% if conjunto.non_form_errors %}
+        <div class="errores">{{ conjunto.non_form_errors }}</div>
+    {% endif %}
+
+    {% for formulario in conjunto %}
+        <section class="tarjeta bloque-video">
+            <h2>Video {{ forloop.counter }}</h2>
+
+            {% if formulario.non_field_errors %}
+                <div class="errores">{{ formulario.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="cuadricula">
+                {% for campo in formulario %}
+                    <div class="campo">
+                        <label for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+                        {{ campo }}
+                        {% for error in campo.errors %}
+                            <small class="error">{{ error }}</small>
+                        {% endfor %}
+                        <small class="error error-cliente" aria-live="polite"></small>
+                    </div>
+                {% endfor %}
+            </div>
+            <p class="ayuda">
+                Formatos: MP4, MOV, MPG, MPEG o WEBM. Máximo 3 MB por archivo.
+                El tamaño se calcula automáticamente al elegir el archivo.
+            </p>
+        </section>
+    {% endfor %}
+
+    <div class="acciones finales">
+        <button class="boton" type="submit">Guardar videos</button>
+        <a class="boton boton-secundario" href="{% url 'inicio' %}">Volver</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll(".bloque-video").forEach((bloque) => {
+    const archivo = bloque.querySelector('input[type="file"]');
+    const extension = bloque.querySelector('select[name$="-extension"]');
+    const tamano = bloque.querySelector('input[name$="-tamano_mb"]');
+
+    archivo.accept = ".mp4,.mov,.mpg,.mpeg,.webm";
+
+    archivo.addEventListener("change", () => {
+        const aviso = archivo.closest(".campo").querySelector(".error-cliente");
+        const seleccionado = archivo.files[0];
+        if (!seleccionado) return;
+
+        const punto = seleccionado.name.lastIndexOf(".");
+        const tipo = punto >= 0 ? seleccionado.name.slice(punto).toLowerCase() : "";
+        extension.value = tipo;
+        tamano.value = (seleccionado.size / (1024 * 1024)).toFixed(2);
+
+        if (seleccionado.size > 3 * 1024 * 1024) {
+            aviso.textContent = "El archivo no debe pesar más de 3 MB.";
+        } else if (![".mp4", ".mov", ".mpg", ".mpeg", ".webm"].includes(tipo)) {
+            aviso.textContent = "Formato de video no permitido.";
+        } else {
+            aviso.textContent = "";
+        }
+    });
+
+    bloque.querySelectorAll("input, select").forEach((entrada) => {
+        entrada.required = true;
+        entrada.addEventListener("blur", () => {
+            const aviso = entrada.closest(".campo").querySelector(".error-cliente");
+            if (!entrada.value) {
+                aviso.textContent = "Este campo es obligatorio.";
+            } else if (entrada !== archivo) {
+                aviso.textContent = "";
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

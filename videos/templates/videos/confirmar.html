@@ -1,0 +1,29 @@
+{% extends "videos/base.html" %}
+{% block title %}Confirmar datos | Pro-Gol Watch{% endblock %}
+
+{% block content %}
+<section class="tarjeta formulario separacion-superior">
+    <div class="encabezado-seccion">
+        <span class="paso">02 / 03</span>
+        <h1>Confirma tu información</h1>
+    </div>
+
+    <p class="resumen">
+        Bienvenido/a <strong>{{ datos.nombre }}</strong>, tu número de nómina es
+        <strong>{{ datos.nomina }}</strong> y estás intentando subir
+        <strong>{{ datos.cantidad }}</strong> video{{ datos.cantidad|pluralize }}.
+        ¿Es correcta la información?
+    </p>
+
+    <form method="post" class="acciones">
+        {% csrf_token %}
+        <button class="boton" type="submit" name="respuesta" value="si">
+            Sí, continuar
+        </button>
+        <button class="boton boton-secundario" type="submit"
+                name="respuesta" value="no">
+            No, volver a capturar
+        </button>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "videos/base.html" %}
+{% block title %}Registrar usuario | Pro-Gol Watch{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <span class="etiqueta">Proyecto final · Python y Django</span>
+    <h1>El fútbol se analiza mejor en video.</h1>
+    <p>Registra tus datos y selecciona cuántos videos deseas subir.</p>
+</section>
+
+<section class="tarjeta formulario">
+    <div class="encabezado-seccion">
+        <span class="paso">01 / 03</span>
+        <h2>Datos del usuario</h2>
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="errores">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        {% for campo in form %}
+            <div class="campo">
+                <label for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+                {{ campo }}
+                {% for error in campo.errors %}
+                    <small class="error">{{ error }}</small>
+                {% endfor %}
+                <small class="error error-cliente" aria-live="polite"></small>
+            </div>
+        {% endfor %}
+
+        <button class="boton" type="submit">Aceptar y continuar →</button>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll("input").forEach((entrada) => {
+    entrada.required = true;
+    entrada.addEventListener("blur", () => {
+        const aviso = entrada.closest(".campo").querySelector(".error-cliente");
+        if (!entrada.value.trim()) {
+            aviso.textContent = "Este campo es obligatorio.";
+        } else if (entrada.name === "nomina" && !/^[A-Za-z0-9]+$/.test(entrada.value)) {
+            aviso.textContent = "La nómina debe contener solo letras y números.";
+        } else if (entrada.name === "nombre" &&
+                   !/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]+$/.test(entrada.value.trim())) {
+            aviso.textContent = "El nombre debe contener solo letras.";
+        } else if (entrada.name === "cantidad" && Number(entrada.value) < 1) {
+            aviso.textContent = "Indica al menos un video.";
+        } else {
+            aviso.textContent = "";
+        }
+    });
+});
+</script>
+{% endblock %}

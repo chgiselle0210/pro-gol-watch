@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Pro-Gol Watch{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'videos/estilos.css' %}">
+</head>
+<body>
+    <header class="barra">
+        <div class="contenedor barra-contenido">
+            <a class="marca" href="{% url 'inicio' %}">⚽ Pro-Gol Watch</a>
+            <nav aria-label="Navegación principal">
+                <a href="{% url 'inicio' %}">Subir videos</a>
+                <a href="{% url 'lista_videos' %}">Biblioteca</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="contenedor">
+        {% if messages %}
+            <div class="mensajes" role="status">
+                {% for message in messages %}
+                    <p class="mensaje">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="pie">
+        Pro-Gol Watch · Plataforma académica de videos de fútbol
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
